@@ -5,30 +5,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Объединение для разных типов идентификаторов книги
 typedef union {
-    int numeric_id;     // Числовой идентификатор
-    char string_id[20]; // Строковый идентификатор (например, ISBN)
+    int numeric_id;
+    char string_id[20];
 } BookID;
 
-// Структура для хранения информации о книге
 typedef struct {
-    BookID id;           // Регистрационный номер (union)
-    char author[100];    // Автор
-    char title[100];     // Название
-    int year;           // Год издания
-    char publisher[50]; // Издательство
-    int pages;          // Количество страниц
+    BookID id;
+    char author[100];
+    char title[100];
+    int year;
+    char publisher[50];
+    int pages;
 } Book;
 
-// Структура для динамического массива книг
 typedef struct {
-    Book* books;        // Указатель на массив структур
-    int size;          // Текущее количество книг
-    int capacity;      // Вместимость массива
+    Book* books;
+    int size;
+    int capacity;
 } BookArray;
 
-// Функции работы с массивом книг
 BookArray* createBookArray(int initialCapacity);
 void freeBookArray(BookArray* array);
 int addBook(BookArray* array, Book book);
@@ -36,7 +32,6 @@ int insertBook(BookArray* array, Book book, int index);
 int removeBook(BookArray* array, int index);
 int updateBook(BookArray* array, int index, Book book);
 
-// Основные функции согласно заданию
 BookArray* inputBooksFixedCount(int count);
 BookArray* inputBooksUntilCondition();
 BookArray* inputBooksInteractive();
@@ -50,8 +45,7 @@ int modifyBookByField(BookArray* array, const char* field, const char* value);
 void shellSortByYear(BookArray* array);
 void shellSortByAuthor(BookArray* array);
 
-// Вспомогательные функции
 void printBook(const Book* book);
 Book createBookFromInput(int autoGenerateID);
 
-#endif // BOOK_H
+#endif

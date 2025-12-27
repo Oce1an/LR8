@@ -39,7 +39,7 @@ int showBookInputMenu() {
     printf("2. Input until condition\n");
     printf("3. Interactive input\n");
     printf("0. Back to main menu\n");
-    printf("Select method (0 to return): ");
+    printf("Select action: ");
 
     int choice;
     scanf("%d", &choice);
@@ -59,7 +59,7 @@ void handleMainMenu(BookArray** array) {
         clearInputBuffer();
 
         switch (choice) {
-        case 1: // ¬вод книг
+        case 1:
         {
             int inputMethod;
             do {

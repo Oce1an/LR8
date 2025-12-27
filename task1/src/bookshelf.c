@@ -116,7 +116,7 @@ BookArray* inputBooksFixedCount(int count) {
 
 BookArray* inputBooksUntilCondition() {
     BookArray* array = createBookArray(10);
-    char stopTitle[100] = "STOP"; // Признак остановки
+    char stopTitle[100] = "STOP";
 
     printf("=== Input books (enter 'STOP' in title field to stop) ===\n");
 
@@ -125,7 +125,6 @@ BookArray* inputBooksUntilCondition() {
         printf("\nBook %d:\n", ++bookCount);
         Book book = createBookFromInput(1);
 
-        // Проверка условия остановки
         if (strcmp(book.title, stopTitle) == 0) {
             printf("Input completed by condition.\n");
             break;
@@ -133,11 +132,10 @@ BookArray* inputBooksUntilCondition() {
 
         addBook(array, book);
 
-        // Диалог о продолжении ввода
         char choice;
         printf("Continue input? (y/n): ");
         scanf(" %c", &choice);
-        getchar(); // Очистка буфера
+        getchar();
 
         if (choice != 'y' && choice != 'Y') {
             break;
@@ -159,7 +157,6 @@ BookArray* inputBooksInteractive() {
         printf("\nBook %d:\n", ++bookCount);
         Book book = createBookFromInput(1);
 
-        // Проверка на отмену
         if (strcmp(book.title, "CANCEL") == 0) {
             printf("Input stopped after %d books.\n", bookCount - 1);
             break;
@@ -167,7 +164,6 @@ BookArray* inputBooksInteractive() {
 
         addBook(array, book);
 
-        // Диалог о продолжении ввода
         if (bookCount > 0) {
             char continueInput;
             printf("Add another book? (y/n): ");
@@ -188,7 +184,6 @@ Book createBookFromInput(int autoGenerateID) {
     char input[100];
     static int lastID = 1000;
 
-    // Использование union для ID
     if (autoGenerateID) {
         book.id.numeric_id = ++lastID;
         printf("Auto-generated ID: %d\n", book.id.numeric_id);
@@ -270,7 +265,6 @@ Book createBookFromInput(int autoGenerateID) {
     return book;
 }
 
-// Функция 2: Просмотр содержимого массива
 void displayBooks(const BookArray* array) {
     if (array == NULL || array->size == 0) {
         printf("Book array is empty.\n");
@@ -294,7 +288,6 @@ void displayBooks(const BookArray* array) {
     printf("=======================================================================================\n");
 }
 
-// Функция 3: Дополнение существующего массива
 void addBooksToExisting(BookArray* existingArray) {
     if (existingArray == NULL) {
         printf("Array not initialized!\n");
@@ -320,11 +313,9 @@ void addBooksToExisting(BookArray* existingArray) {
         printf("\nBook %d (total number %d):\n",
             i + 1, existingArray->size + i + 1);
 
-        // Предоставляем возможность отмены для каждой книги
         printf("Enter 'CANCEL' to stop adding books\n");
         Book book = createBookFromInput(1);
 
-        // Проверка на отмену
         if (strcmp(book.title, "CANCEL") == 0) {
             printf("Book addition stopped by user.\n");
             break;
@@ -428,7 +419,7 @@ int deleteBookByField(BookArray* array, const char* field, const char* value) {
             printf("Deleted book: ");
             printBook(&array->books[i]);
             removeBook(array, i);
-            i--; // Корректировка индекса после удаления
+            i--;
             deleted++;
         }
     }
@@ -460,7 +451,7 @@ int modifyBookByField(BookArray* array, const char* field, const char* value) {
             printBook(&array->books[i]);
 
             printf("\nEnter new data:\n");
-            Book newBook = createBookFromInput(0); // Ручной ввод ID
+            Book newBook = createBookFromInput(0);
 
             char confirm;
             printf("Confirm modification? (y/n): ");

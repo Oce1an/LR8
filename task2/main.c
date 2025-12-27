@@ -2,26 +2,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Union for different product data formats
 typedef union {
-    int int_code;        // integer code
-    char str_code[10];   // string code
+    int int_code;
+    char str_code[10];
 } ProductCode;
 
-// Structure for storing product information
 typedef struct {
-    char name[50];       // product name
-    int quantity;        // quantity
-    int workshop;        // workshop number
-    ProductCode code;    // product code (union)
+    char name[50];
+    int quantity;
+    int workshop;
+    ProductCode code;
 } Product;
 
-// Global variables
-Product* products = NULL;  // dynamic array of structures
-int product_count = 0;     // number of records
-int capacity = 0;          // array capacity
+Product* products = NULL;
+int product_count = 0;
+int capacity = 0;
 
-// Function prototypes
 void init_data();
 void add_product();
 void delete_product();
@@ -32,12 +28,11 @@ void save_to_file();
 void load_from_file();
 void edit_in_file();
 void free_memory();
-void clear_input_buffer();  // New function to clear input buffer
+void clear_input_buffer();
 
 int main() {
     int choice;
 
-    // Load data from file on startup
     load_from_file();
 
     do {
@@ -54,7 +49,7 @@ int main() {
         printf("==========================\n");
         printf("Select action: ");
         scanf("%d", &choice);
-        clear_input_buffer();  // Clear buffer after scanf
+        clear_input_buffer();
 
         switch (choice) {
         case 1:
@@ -82,7 +77,7 @@ int main() {
             edit_in_file();
             break;
         case 0:
-            save_to_file(); // Auto-save on exit
+            save_to_file();
             free_memory();
             break;
         default:
@@ -93,15 +88,13 @@ int main() {
     return 0;
 }
 
-// Clear input buffer
 void clear_input_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-// Initialize data
 void init_data() {
-    free_memory(); // Free old data
+    free_memory();
 
     printf("Enter number of records to initialize: ");
     scanf("%d", &capacity);
@@ -117,22 +110,18 @@ void init_data() {
     for (int i = 0; i < capacity; i++) {
         printf("\nRecord %d:\n", i + 1);
 
-        // Input name (can contain spaces)
         printf("Name: ");
         fgets(products[i].name, sizeof(products[i].name), stdin);
-        products[i].name[strcspn(products[i].name, "\n")] = 0; // Remove newline
+        products[i].name[strcspn(products[i].name, "\n")] = 0;
 
-        // Input quantity
         printf("Quantity: ");
         scanf("%d", &products[i].quantity);
         clear_input_buffer();
 
-        // Input workshop number
         printf("Workshop number: ");
         scanf("%d", &products[i].workshop);
         clear_input_buffer();
 
-        // Input code type
         int code_type;
         printf("Code type (1 - number, 2 - string): ");
         scanf("%d", &code_type);
@@ -153,7 +142,6 @@ void init_data() {
     printf("Initialization complete!\n");
 }
 
-// Add new record
 void add_product() {
     if (product_count >= capacity) {
         capacity = capacity == 0 ? 5 : capacity * 2;
@@ -166,22 +154,18 @@ void add_product() {
 
     printf("\nAdding new record:\n");
 
-    // Input name
     printf("Name: ");
     fgets(products[product_count].name, sizeof(products[product_count].name), stdin);
     products[product_count].name[strcspn(products[product_count].name, "\n")] = 0;
 
-    // Input quantity
     printf("Quantity: ");
     scanf("%d", &products[product_count].quantity);
     clear_input_buffer();
 
-    // Input workshop number
     printf("Workshop number: ");
     scanf("%d", &products[product_count].workshop);
     clear_input_buffer();
 
-    // Input code type
     int code_type;
     printf("Code type (1 - number, 2 - string): ");
     scanf("%d", &code_type);
@@ -204,7 +188,6 @@ void add_product() {
     printf("Record added!\n");
 }
 
-// Delete record
 void delete_product() {
     if (product_count == 0) {
         printf("No records to delete!\n");
@@ -221,9 +204,8 @@ void delete_product() {
         return;
     }
 
-    index--; // Switch to 0-indexing
+    index--;
 
-    // Shift records one position
     for (int i = index; i < product_count - 1; i++) {
         products[i] = products[i + 1];
     }
@@ -232,7 +214,6 @@ void delete_product() {
     printf("Record deleted!\n");
 }
 
-// Edit record
 void edit_product() {
     if (product_count == 0) {
         printf("No records to edit!\n");
@@ -249,11 +230,10 @@ void edit_product() {
         return;
     }
 
-    index--; // Switch to 0-indexing
+    index--;
 
     printf("\nEditing record %d:\n", index + 1);
 
-    // Edit name
     printf("Current name: %s\n", products[index].name);
     printf("New name (press Enter to keep current): ");
     char input[100];
@@ -263,7 +243,6 @@ void edit_product() {
         strcpy(products[index].name, input);
     }
 
-    // Edit quantity
     printf("Current quantity: %d\n", products[index].quantity);
     printf("New quantity (press Enter to keep current): ");
     fgets(input, sizeof(input), stdin);
@@ -272,7 +251,6 @@ void edit_product() {
         products[index].quantity = atoi(input);
     }
 
-    // Edit workshop number
     printf("Current workshop number: %d\n", products[index].workshop);
     printf("New workshop number (press Enter to keep current): ");
     fgets(input, sizeof(input), stdin);
@@ -281,7 +259,6 @@ void edit_product() {
         products[index].workshop = atoi(input);
     }
 
-    // Edit product code
     printf("Current product code: ");
     if (products[index].code.int_code != 0) {
         printf("%d\n", products[index].code.int_code);
@@ -294,7 +271,6 @@ void edit_product() {
     fgets(input, sizeof(input), stdin);
     input[strcspn(input, "\n")] = 0;
     if (strlen(input) > 0) {
-        // Check if input is a number
         int is_number = 1;
         for (int i = 0; input[i] != '\0'; i++) {
             if (input[i] < '0' || input[i] > '9') {
@@ -305,12 +281,10 @@ void edit_product() {
 
         if (is_number) {
             products[index].code.int_code = atoi(input);
-            // Clear string code if switching to integer
             products[index].code.str_code[0] = '\0';
         }
         else {
             strcpy(products[index].code.str_code, input);
-            // Clear integer code if switching to string
             products[index].code.int_code = 0;
         }
     }
@@ -318,7 +292,6 @@ void edit_product() {
     printf("Record updated!\n");
 }
 
-// View all records
 void view_all() {
     if (product_count == 0) {
         printf("No records to display!\n");
@@ -332,7 +305,6 @@ void view_all() {
 
     for (int i = 0; i < product_count; i++) {
         char code_str[20];
-        // Determine code type for display
         if (products[i].code.int_code != 0) {
             sprintf(code_str, "%d", products[i].code.int_code);
         }
@@ -347,7 +319,6 @@ void view_all() {
     printf("===================================================\n");
 }
 
-// Workshop statistics (quantity by name in descending order)
 void view_workshop_stats() {
     if (product_count == 0) {
         printf("No records for analysis!\n");
@@ -359,7 +330,6 @@ void view_workshop_stats() {
     scanf("%d", &workshop_num);
     clear_input_buffer();
 
-    // Create temporary array for statistics
     typedef struct {
         char name[50];
         int total_quantity;
@@ -368,12 +338,10 @@ void view_workshop_stats() {
     WorkshopStat* stats = NULL;
     int stat_count = 0;
 
-    // Collect workshop statistics
     for (int i = 0; i < product_count; i++) {
         if (products[i].workshop == workshop_num) {
             int found = 0;
 
-            // Search for name in statistics
             for (int j = 0; j < stat_count; j++) {
                 if (strcmp(stats[j].name, products[i].name) == 0) {
                     stats[j].total_quantity += products[i].quantity;
@@ -382,7 +350,6 @@ void view_workshop_stats() {
                 }
             }
 
-            // If not found, add new record
             if (!found) {
                 stat_count++;
                 stats = (WorkshopStat*)realloc(stats, stat_count * sizeof(WorkshopStat));
@@ -398,7 +365,6 @@ void view_workshop_stats() {
         return;
     }
 
-    // Sort by descending quantity
     for (int i = 0; i < stat_count - 1; i++) {
         for (int j = i + 1; j < stat_count; j++) {
             if (stats[i].total_quantity < stats[j].total_quantity) {
@@ -409,7 +375,6 @@ void view_workshop_stats() {
         }
     }
 
-    // Display results
     printf("\n========== STATISTICS FOR WORKSHOP %d ==========\n", workshop_num);
     printf("%-20s %-15s\n", "Product Name", "Total Quantity");
     printf("==========================================\n");
@@ -422,7 +387,6 @@ void view_workshop_stats() {
     free(stats);
 }
 
-// Save to file
 void save_to_file() {
     FILE* file = fopen("products.txt", "w");
     if (!file) {
@@ -436,7 +400,6 @@ void save_to_file() {
         fprintf(file, "%d\n", products[i].quantity);
         fprintf(file, "%d\n", products[i].workshop);
 
-        // Save product code
         if (products[i].code.int_code != 0) {
             fprintf(file, "%d\n", products[i].code.int_code);
         }
@@ -448,7 +411,6 @@ void save_to_file() {
     fclose(file);
 }
 
-// Load from file
 void load_from_file() {
     FILE* file = fopen("products.txt", "r");
     if (!file) {
@@ -456,7 +418,7 @@ void load_from_file() {
         return;
     }
 
-    free_memory(); // Free old data
+    free_memory();
 
     fscanf(file, "%d", &product_count);
     clear_input_buffer();
@@ -470,24 +432,19 @@ void load_from_file() {
 
     char buffer[100];
     for (int i = 0; i < product_count; i++) {
-        // Read name (can contain spaces)
         fgets(buffer, sizeof(buffer), file);
         buffer[strcspn(buffer, "\n")] = 0;
         strcpy(products[i].name, buffer);
 
-        // Read quantity
         fgets(buffer, sizeof(buffer), file);
         products[i].quantity = atoi(buffer);
 
-        // Read workshop number
         fgets(buffer, sizeof(buffer), file);
         products[i].workshop = atoi(buffer);
 
-        // Read product code
         fgets(buffer, sizeof(buffer), file);
         buffer[strcspn(buffer, "\n")] = 0;
 
-        // Check if code is a number
         int is_number = 1;
         for (int j = 0; buffer[j] != '\0'; j++) {
             if (buffer[j] < '0' || buffer[j] > '9') {
@@ -510,7 +467,6 @@ void load_from_file() {
     printf("Data loaded from file products.txt\n");
 }
 
-// Edit records in file
 void edit_in_file() {
     printf("\nEditing data in file:\n");
     printf("1. Edit specific record\n");
@@ -522,13 +478,13 @@ void edit_in_file() {
     clear_input_buffer();
 
     if (choice == 1) {
-        edit_product(); // Use existing function
-        save_to_file(); // Save changes to file
+        edit_product();
+        save_to_file();
         printf("Changes saved to file!\n");
     }
     else if (choice == 2) {
-        add_product(); // Use existing function
-        save_to_file(); // Save changes to file
+        add_product();
+        save_to_file();
         printf("New record added to file!\n");
     }
     else {
@@ -536,7 +492,6 @@ void edit_in_file() {
     }
 }
 
-// Free memory
 void free_memory() {
     if (products) {
         free(products);

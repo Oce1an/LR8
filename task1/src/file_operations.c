@@ -11,10 +11,8 @@ int saveBooksToFile(const BookArray* array, const char* filename) {
         return 0;
     }
 
-    // Записываем количество книг
     fwrite(&array->size, sizeof(int), 1, file);
 
-    // Записываем каждую книгу
     for (int i = 0; i < array->size; i++) {
         fwrite(&array->books[i], sizeof(Book), 1, file);
     }
@@ -36,7 +34,6 @@ BookArray* loadBooksFromFile(const char* filename) {
         return NULL;
     }
 
-    // Читаем количество книг
     int bookCount;
     if (fread(&bookCount, sizeof(int), 1, file) != 1) {
         printf("Error reading book count!\n");
@@ -44,14 +41,12 @@ BookArray* loadBooksFromFile(const char* filename) {
         return NULL;
     }
 
-    // Создаем массив
     BookArray* array = createBookArray(bookCount);
     if (array == NULL) {
         fclose(file);
         return NULL;
     }
 
-    // Читаем книги
     for (int i = 0; i < bookCount; i++) {
         Book book;
         if (fread(&book, sizeof(Book), 1, file) != 1) {
@@ -68,7 +63,6 @@ BookArray* loadBooksFromFile(const char* filename) {
     return array;
 }
 
-// Корректировка записи в файле без полной перезаписи
 int updateBookInFile(const char* filename, int bookIndex, const Book* newBook) {
     if (filename == NULL || newBook == NULL) {
         return 0;
@@ -80,7 +74,6 @@ int updateBookInFile(const char* filename, int bookIndex, const Book* newBook) {
         return 0;
     }
 
-    // Читаем количество книг
     int bookCount;
     if (fread(&bookCount, sizeof(int), 1, file) != 1) {
         printf("Error reading book count!\n");
@@ -88,7 +81,6 @@ int updateBookInFile(const char* filename, int bookIndex, const Book* newBook) {
         return 0;
     }
 
-    // Проверяем индекс
     if (bookIndex < 0 || bookIndex >= bookCount) {
         printf("Invalid book index! Valid range: 0-%d\n",
             bookCount - 1);
@@ -96,8 +88,6 @@ int updateBookInFile(const char* filename, int bookIndex, const Book* newBook) {
         return 0;
     }
 
-    // Перемещаемся к нужной позиции
-    // Пропускаем счетчик и предыдущие книги
     long offset = sizeof(int) + bookIndex * sizeof(Book);
     if (fseek(file, offset, SEEK_SET) != 0) {
         printf("Error positioning in file!\n");
@@ -105,7 +95,6 @@ int updateBookInFile(const char* filename, int bookIndex, const Book* newBook) {
         return 0;
     }
 
-    // Записываем обновленную книгу
     if (fwrite(newBook, sizeof(Book), 1, file) != 1) {
         printf("Error writing book!\n");
         fclose(file);
@@ -117,28 +106,23 @@ int updateBookInFile(const char* filename, int bookIndex, const Book* newBook) {
     return 1;
 }
 
-// Удаление книги из файла (с перезаписью файла)
 int deleteBookFromFile(const char* filename, int bookIndex) {
-    // Загружаем все книги
     BookArray* array = loadBooksFromFile(filename);
     if (array == NULL) {
         return 0;
     }
 
-    // Удаляем книгу из массива
     if (!removeBook(array, bookIndex)) {
         freeBookArray(array);
         return 0;
     }
 
-    // Сохраняем обновленный массив
     int result = saveBooksToFile(array, filename);
     freeBookArray(array);
 
     return result;
 }
 
-// Отображение книг из файла
 void displayBooksFromFile(const char* filename) {
     BookArray* array = loadBooksFromFile(filename);
     if (array != NULL) {
